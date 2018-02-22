@@ -1,0 +1,14 @@
+Package: knowledgerepo
+Type: Package
+Title: R Interface to Knowledge Repository
+Version: 0.1.0
+Author: David Robinson <admiral.david@gmail.com>
+Maintainer: David Robinson <admiral.david@gmail.com>
+Description: R package that wraps the command line interface
+    to AirBnB's Knowledge Repository project.
+License: Apache License (>= 2.0)
+Encoding: UTF-8
+LazyData: true
+Imports: tools,
+  purrr
+RoxygenNote: 6.0.1
