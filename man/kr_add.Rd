@@ -5,8 +5,8 @@
 \title{Add a post to a knowledge repository}
 \usage{
 kr_add(filename, path = NULL, update = FALSE, branch = NULL,
-  squash = FALSE, submit = FALSE, message = paste0("Adding ", filename),
-  src = NULL, ...)
+  squash = FALSE, submit = FALSE, message = NULL, src = NULL,
+  browse_pr = FALSE, ...)
 }
 \arguments{
 \item{filename}{Filename to add}
@@ -24,18 +24,22 @@ default (which is the path of the knowledge post).}
 \item{squash}{Automatically suppress all previous commits, and
 replace it with this version.}
 
-\item{submit}{Submit newly added post}
+\item{submit}{Submit newly added post.}
 
-\item{message}{Commit message}
+\item{message}{Commit message. By default, will use 'Adding post: [title]'}
 
 \item{src}{Specify additional source files to add to
 \code{<knowledge_post>/orig_src.}}
+
+\item{browse_pr}{If \code{submit}, whether to browse to a GitHub pull request for
+submitting this post.}
 
 \item{...}{Global arguments to \code{knowledge_repo} commands, such as
 \code{repo} or \code{noupdate} (see Details)}
 }
 \description{
-Add a post to a knowledge repository
+Add a local file to a knowledge repository. Unless submit = TRUE, this doesn't
+(yet) submit the post.
 }
 \details{
 Global arguments that can be passed to all knowledge_repo

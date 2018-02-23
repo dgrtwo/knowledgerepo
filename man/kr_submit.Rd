@@ -4,10 +4,15 @@
 \alias{kr_submit}
 \title{Submit a post to the knowledge base for review}
 \usage{
-kr_submit(path, ...)
+kr_submit(path, browse_pr = FALSE, repo = Sys.getenv("KNOWLEDGE_REPO"), ...)
 }
 \arguments{
 \item{path}{The path of the knowledge post to submit for review.}
+
+\item{browse_pr}{Whether to browse to a GitHub pull request for
+submitting this post}
+
+\item{repo}{Whether to browse to the repository}
 
 \item{...}{Global arguments to \code{knowledge_repo} commands, such as
 \code{repo} or \code{noupdate} (see Details)}

@@ -39,7 +39,8 @@ kr_create <- function(filename, format = NULL, template = NULL, ...) {
 
 #' Add a post to a knowledge repository
 #'
-#' Add a post to a knowledge repository
+#' Add a local file to a knowledge repository. Unless submit = TRUE, this doesn't
+#' (yet) submit the post.
 #'
 #' @param filename Filename to add
 #' @param path The path of the destination post to be added in the
@@ -51,10 +52,12 @@ kr_create <- function(filename, format = NULL, template = NULL, ...) {
 #' default (which is the path of the knowledge post).
 #' @param squash Automatically suppress all previous commits, and
 #' replace it with this version.
-#' @param submit Submit newly added post
-#' @param message Commit message
+#' @param submit Submit newly added post.
+#' @param message Commit message. By default, will use 'Adding post: [title]'
 #' @param src Specify additional source files to add to
 #' \code{<knowledge_post>/orig_src.}
+#' @param browse_pr If \code{submit}, whether to browse to a GitHub pull request for
+#' submitting this post.
 #'
 #' @template extra-args
 #'
@@ -71,12 +74,27 @@ kr_add <- function(filename,
                    branch = NULL,
                    squash = FALSE,
                    submit = FALSE,
-                   message = paste0("Adding ", filename),
+                   message = NULL,
                    src = NULL,
-                   ...) {
+                   browse_pr = FALSE,
+                   ...,
+                   repo = Sys.getenv("KNOWLEDGE_REPO")) {
+  if (is.null(message)) {
+    title <- rmarkdown::yaml_front_matter(filename)$title
+    if (is.null(title)) {
+      warning("Can't find title in YAML header of ", title)
+    }
+    message <- paste0("Adding post: ", title)
+  }
+
+  if (repo == "") {
+    stop("No repository specified and no KNOWLEDGE_REPO environment variable")
+  }
+
   message <- paste0("'", gsub("'", "\\'", message), "'")
 
-  kr_command(...,
+  kr_command(repo = repo,
+             ...,
              "add",
              path = path,
              update = update,
@@ -86,6 +104,18 @@ kr_add <- function(filename,
              message = message,
              src = src,
              filename)
+
+  # may need to add reminder
+  if (submit) {
+    if (is.null(path)) {
+      path <- rmarkdown::yaml_front_matter(filename)$path
+    }
+
+    print(repo)
+    print(path)
+
+    after_submit(repo, path, browse_pr = browse_pr)
+  }
 }
 
 
@@ -124,6 +154,9 @@ kr_init <- function(repo,
 #' after adding it (assuming submit was FALSE in that command).
 #'
 #' @param path The path of the knowledge post to submit for review.
+#' @param browse_pr Whether to browse to a GitHub pull request for
+#' submitting this post
+#' @param repo Repository of the knowledge post to add
 #'
 #' @template extra-args
 #'
@@ -134,8 +167,14 @@ kr_init <- function(repo,
 #' kr_submit("examples/test")
 #'
 #' @export
-kr_submit <- function(path, ...) {
-  kr_command(..., "submit", path)
+kr_submit <- function(path, browse_pr = FALSE, repo = Sys.getenv("KNOWLEDGE_REPO"), ...) {
+  if (repo == "") {
+    stop("No repository specified and no KNOWLEDGE_REPO environment variable")
+  }
+
+  kr_command(..., repo = repo, "submit", path)
+
+  after_submit(repo, path, browse_pr = browse_pr)
 }
 
 
@@ -259,4 +298,3 @@ kr_command <- function(..., .verbose = TRUE) {
   }
   system(cmd)
 }
-
