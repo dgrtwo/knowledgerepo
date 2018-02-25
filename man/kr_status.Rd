@@ -8,9 +8,7 @@ kr_status(...)
 }
 \arguments{
 \item{...}{Global arguments to \code{knowledge_repo} commands, such as
-\code{repo} or \code{noupdate}
-
-kr_status()}
+\code{repo} or \code{noupdate}}
 }
 \description{
 Show status of knowledge repo

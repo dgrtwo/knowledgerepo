@@ -42,6 +42,7 @@ commands include:
 }
 \examples{
 
-kr_init("example_repository")
+repo <- tempfile()
+kr_init(repo)
 
 }

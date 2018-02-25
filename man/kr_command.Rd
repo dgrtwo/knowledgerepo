@@ -11,34 +11,16 @@ kr_command(..., .verbose = TRUE)
 or named}
 
 \item{.verbose}{Whether to display the output as a message}
-
-\item{...}{Global arguments to \code{knowledge_repo} commands, such as
-\code{repo} or \code{noupdate} (see Details)}
 }
 \description{
 Run a keybase command with the given arguments. Positional
 arguments are provided in order, while named arguments are prefixed
-with \code{--name}. To make passing arguments easier, commit messages
-}
-\details{
-Global arguments that can be passed to all knowledge_repo
-commands include:
-
-\itemize{
-  \item{repo}{Path to Knowledge Repository to add to. Can also set
-  \code{KNOWLEDGE_REPO} variable in \code{.Renviron}.}
-  \item{dev}{Whether to skip passing control to version of code
-  checked out in knowledge repository.}
-  \item{debug}{Whether to enable debug mode.}
-  \item{noupdate}{Whether script should update the repository before
-  performing actions.}
-  \item{version}{Show version and exit.}
-  \item{help}{Show help and exit}
-}
+with \code{--name}. Arguments passed as TRUE are empty (e.g.
+\code{help = TRUE} becomes \code{--help}), while FALSE and NULL are
+dropped.
 }
 \examples{
 
 kr_command("create", "Rmd", "test.Rmd")
-kr_command("add", help = TRUE)
 
 }

@@ -6,7 +6,7 @@
 \usage{
 kr_add(filename, path = NULL, update = FALSE, branch = NULL,
   squash = FALSE, submit = FALSE, message = NULL, src = NULL,
-  browse_pr = FALSE, ...)
+  browse_pr = FALSE, ..., repo = Sys.getenv("KNOWLEDGE_REPO"))
 }
 \arguments{
 \item{filename}{Filename to add}
@@ -36,6 +36,8 @@ submitting this post.}
 
 \item{...}{Global arguments to \code{knowledge_repo} commands, such as
 \code{repo} or \code{noupdate} (see Details)}
+
+\item{repo}{Repository of the knowledge post to add}
 }
 \description{
 Add a local file to a knowledge repository. Unless submit = TRUE, this doesn't
@@ -59,8 +61,15 @@ commands include:
 }
 \examples{
 
-kr_add("test.Rmd")
-kr_add("test.Rmd", message = "Committing a new post")
-kr_add("test.Rmd", submit = TRUE)
+# set up a repository and post
+repo <- tempfile()
+kr_init(repo)
+kr_create("test.Rmd")
+
+# add to knowledge repo
+kr_add("test.Rmd", repo = repo, path = "tests/test")
+
+# custom commit message
+kr_add("test.Rmd", repo = repo, path = "tests/test2", message = "Committing a new post")
 
 }

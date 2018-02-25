@@ -29,8 +29,3 @@ commands include:
   \item{help}{Show help and exit}
 }
 }
-\examples{
-
-kr_runserver()
-
-}

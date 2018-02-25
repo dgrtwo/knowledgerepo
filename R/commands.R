@@ -58,14 +58,22 @@ kr_create <- function(filename, format = NULL, template = NULL, ...) {
 #' \code{<knowledge_post>/orig_src.}
 #' @param browse_pr If \code{submit}, whether to browse to a GitHub pull request for
 #' submitting this post.
+#' @param repo Repository of the knowledge post to add
 #'
 #' @template extra-args
 #'
 #' @examples
 #'
-#' kr_add("test.Rmd")
-#' kr_add("test.Rmd", message = "Committing a new post")
-#' kr_add("test.Rmd", submit = TRUE)
+#' # set up a repository and post
+#' repo <- tempfile()
+#' kr_init(repo)
+#' kr_create("test.Rmd")
+#'
+#' # add to knowledge repo
+#' kr_add("test.Rmd", repo = repo, path = "tests/test")
+#'
+#' # custom commit message
+#' kr_add("test.Rmd", repo = repo, path = "tests/test2", message = "Committing a new post")
 #'
 #' @export
 kr_add <- function(filename,
@@ -131,7 +139,8 @@ kr_add <- function(filename,
 #'
 #' @examples
 #'
-#' kr_init("example_repository")
+#' repo <- tempfile()
+#' kr_init(repo)
 #'
 #' @export
 kr_init <- function(repo,
@@ -151,25 +160,58 @@ kr_init <- function(repo,
 #' Submit a post to the knowledge base for review
 #'
 #' Submit a post to the knowledge base for review. This would be done
-#' after adding it (assuming submit was FALSE in that command).
+#' after adding it with \code{\link{kr_add}}
+#' (assuming submit was FALSE in that command).
 #'
 #' @param path The path of the knowledge post to submit for review.
+#' @param repo Repository of the knowledge post to add
 #' @param browse_pr Whether to browse to a GitHub pull request for
 #' submitting this post
-#' @param repo Repository of the knowledge post to add
+#' @param master Whether to submit it on master rather than on a
+#' separate branch (allowing for review). If TRUE, rather than using
+#' the knowlege_base CLI it locally merges to master than pushes.
+#' Works only if you have commit access to master.
+#'
+#' @details The "direct" option is not supported by the \code{knowledge_repo}
+#' command line interface, and is a shortcut provided by this package.
 #'
 #' @template extra-args
 #'
 #' @examples
 #'
+#' # set up a repository and post
+#' repo <- tempfile()
+#' kr_init(repo)
 #' kr_create("test.Rmd")
-#' kr_add("test.Rmd", path = "examples/test")
-#' kr_submit("examples/test")
+#'
+#' # add to knowledge repo
+#' kr_add("test.Rmd", repo = repo, path = "tests/test")
+#'
+#' \dontrun{
+#' # submit to remote repository
+#' kr_submit("tests/test")
+#' }
 #'
 #' @export
-kr_submit <- function(path, browse_pr = FALSE, repo = Sys.getenv("KNOWLEDGE_REPO"), ...) {
+kr_submit <- function(path,
+                      repo = Sys.getenv("KNOWLEDGE_REPO"),
+                      browse_pr = FALSE,
+                      master = FALSE,
+                      ...) {
   if (repo == "") {
     stop("No repository specified and no KNOWLEDGE_REPO environment variable")
+  }
+
+  if (master) {
+    # Push directly to master branch rather than a PR
+    # Note that this isn't generally supported by knowledge_repo:
+    # we'll have to see how it works in practice
+    message("Merging ", path, " to master and pushing")
+    r <- git2r::init(repo)
+    git2r::checkout(r, "master")
+    git2r::merge(r, paste0(path, ".kp"))
+    git2r::push(r)
+    return()
   }
 
   kr_command(..., repo = repo, "submit", path)
@@ -183,8 +225,6 @@ kr_submit <- function(path, browse_pr = FALSE, repo = Sys.getenv("KNOWLEDGE_REPO
 #' @param ... Global arguments to \code{knowledge_repo} commands, such as
 #' \code{repo} or \code{noupdate}
 #'
-#' kr_status()
-#'
 #' @export
 kr_status <- function(...) {
   kr_command(..., "status")
@@ -194,10 +234,6 @@ kr_status <- function(...) {
 #' Show status of knowledge repo
 #'
 #' @template extra-args
-#'
-#' @examples
-#'
-#' kr_runserver()
 #'
 #' @export
 kr_runserver <- function(...) {
@@ -238,10 +274,6 @@ kr_preview <- function(path, port = NULL, dburi = NULL, config = NULL, ...) {
 #'
 #' @template extra-args
 #'
-#' @examples
-#'
-#' kr_deploy()
-#'
 #' @export
 kr_deploy <- function(port = NULL,
                       dburi = NULL,
@@ -265,18 +297,17 @@ kr_deploy <- function(port = NULL,
 #'
 #' Run a keybase command with the given arguments. Positional
 #' arguments are provided in order, while named arguments are prefixed
-#' with \code{--name}. To make passing arguments easier, commit messages
+#' with \code{--name}. Arguments passed as TRUE are empty (e.g.
+#' \code{help = TRUE} becomes \code{--help}), while FALSE and NULL are
+#' dropped.
 #'
 #' @param ... Arguments to construct a command, either unnamed (positional)
 #' or named
 #' @param .verbose Whether to display the output as a message
 #'
-#' @template extra-args
-#'
 #' @examples
 #'
 #' kr_command("create", "Rmd", "test.Rmd")
-#' kr_command("add", help = TRUE)
 #'
 #' @export
 kr_command <- function(..., .verbose = TRUE) {

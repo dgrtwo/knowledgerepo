@@ -1,5 +1,7 @@
 
 
+[![Travis build status](https://travis-ci.org/dgrtwo/knowledgerepo.svg?branch=master)](https://travis-ci.org/dgrtwo/knowledgerepo)
+
 # knowledgerepo
 
 The knowledgerepo package is a wrapper around [AirBnB's Knowledge Repository project](https://github.com/airbnb/knowledge-repo), particularly the command line tools included within the project. Its goal is to make it easy to create and submit knowledge posts from within an R session.

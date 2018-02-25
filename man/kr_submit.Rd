@@ -4,24 +4,34 @@
 \alias{kr_submit}
 \title{Submit a post to the knowledge base for review}
 \usage{
-kr_submit(path, browse_pr = FALSE, repo = Sys.getenv("KNOWLEDGE_REPO"), ...)
+kr_submit(path, repo = Sys.getenv("KNOWLEDGE_REPO"), browse_pr = FALSE,
+  master = FALSE, ...)
 }
 \arguments{
 \item{path}{The path of the knowledge post to submit for review.}
 
+\item{repo}{Repository of the knowledge post to add}
+
 \item{browse_pr}{Whether to browse to a GitHub pull request for
 submitting this post}
 
-\item{repo}{Whether to browse to the repository}
+\item{master}{Whether to submit it on master rather than on a
+separate branch (allowing for review). If TRUE, rather than using
+the knowlege_base CLI it locally merges to master than pushes.
+Works only if you have commit access to master.}
 
 \item{...}{Global arguments to \code{knowledge_repo} commands, such as
 \code{repo} or \code{noupdate} (see Details)}
 }
 \description{
 Submit a post to the knowledge base for review. This would be done
-after adding it (assuming submit was FALSE in that command).
+after adding it with \code{\link{kr_add}}
+(assuming submit was FALSE in that command).
 }
 \details{
+The "direct" option is not supported by the \code{knowledge_repo}
+command line interface, and is a shortcut provided by this package.
+
 Global arguments that can be passed to all knowledge_repo
 commands include:
 
@@ -39,8 +49,17 @@ commands include:
 }
 \examples{
 
+# set up a repository and post
+repo <- tempfile()
+kr_init(repo)
 kr_create("test.Rmd")
-kr_add("test.Rmd", path = "examples/test")
-kr_submit("examples/test")
+
+# add to knowledge repo
+kr_add("test.Rmd", repo = repo, path = "tests/test")
+
+\dontrun{
+# submit to remote repository
+kr_submit("tests/test")
+}
 
 }
