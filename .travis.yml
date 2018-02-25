@@ -6,4 +6,4 @@ cache: packages
 python:
   - "2.7"
 install:
-  - pip install knowledge-repo
+  - sudo pip install knowledge-repo
