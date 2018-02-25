@@ -7,3 +7,8 @@ python:
   - "2.7"
 install:
   - sudo pip install knowledge-repo
+r_packages:
+  - purrr
+  - stringr
+  - git2r
+  - rmarkdown
