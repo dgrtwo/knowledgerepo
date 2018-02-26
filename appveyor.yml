@@ -10,11 +10,12 @@ init:
 install:
   ps: Bootstrap
 
-before_install:
+before_build:
   - sudo pip install knowledge-repo
 
 cache:
   - C:\RLibrary
+  - '%LOCALAPPDATA%\pip\Cache'
 
 # Adapt as necessary starting from here
 
