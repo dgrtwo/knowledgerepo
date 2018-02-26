@@ -52,7 +52,7 @@ commands include:
 # set up a repository and post
 repo <- tempfile()
 kr_init(repo)
-kr_create("test.Rmd")
+kr_create("test.Rmd", repo = repo)
 
 # add to knowledge repo
 kr_add("test.Rmd", repo = repo, path = "tests/test")

@@ -2,7 +2,9 @@
 
 language: R
 sudo: false
-cache: packages
+cache:
+  - packages
+  - pip
 python:
   - "2.7"
 before_install:
