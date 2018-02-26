@@ -15,7 +15,10 @@
 #'
 #' @examples
 #'
-#' kr_create("example.Rmd")
+#' # set up a repository and post
+#' repo <- tempfile()
+#' kr_init(repo)
+#' kr_create("test.Rmd", repo = repo)
 #'
 #' @export
 kr_create <- function(filename, format = NULL, template = NULL, ...) {
@@ -67,7 +70,7 @@ kr_create <- function(filename, format = NULL, template = NULL, ...) {
 #' # set up a repository and post
 #' repo <- tempfile()
 #' kr_init(repo)
-#' kr_create("test.Rmd")
+#' kr_create("test.Rmd", repo = repo)
 #'
 #' # add to knowledge repo
 #' kr_add("test.Rmd", repo = repo, path = "tests/test")
