@@ -5,6 +5,5 @@ sudo: false
 cache: packages
 python:
   - "2.7"
-install:
+before_install:
   - sudo pip install knowledge-repo
-
