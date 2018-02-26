@@ -1,6 +1,7 @@
 
 
 [![Travis build status](https://travis-ci.org/dgrtwo/knowledgerepo.svg?branch=master)](https://travis-ci.org/dgrtwo/knowledgerepo)
+[![AppVeyor Build Status](https://ci.appveyor.com/dgrtwo/knowledgerepo)](https://ci.appveyor.com/api/projects/status/github//dgrtwo/knowledgerepo/?branch=master&svg=true)
 
 # knowledgerepo
 
