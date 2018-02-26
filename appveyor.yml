@@ -10,6 +10,9 @@ init:
 install:
   ps: Bootstrap
 
+before_install:
+  - sudo pip install knowledge-repo
+
 cache:
   - C:\RLibrary
 
