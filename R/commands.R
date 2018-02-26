@@ -102,8 +102,6 @@ kr_add <- function(filename,
     stop("No repository specified and no KNOWLEDGE_REPO environment variable")
   }
 
-  message <- paste0("'", gsub("'", "\\'", message), "'")
-
   kr_command(repo = repo,
              ...,
              "add",
@@ -318,6 +316,7 @@ kr_command <- function(..., .verbose = TRUE) {
   args <- list(...)
   args <- purrr::keep(purrr::compact(args), ~ !identical(., FALSE))
   args <- purrr::modify_if(args, ~ identical(., TRUE), ~ "")
+  args <- purrr::map(args, shQuote)
 
   n <- names(args)
   n <- gsub("_", "-", n)
