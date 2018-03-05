@@ -120,9 +120,6 @@ kr_add <- function(filename,
       path <- rmarkdown::yaml_front_matter(filename)$path
     }
 
-    print(repo)
-    print(path)
-
     after_submit(repo, path, browse_pr = browse_pr)
   }
 }
@@ -316,7 +313,7 @@ kr_command <- function(..., .verbose = TRUE) {
   args <- list(...)
   args <- purrr::keep(purrr::compact(args), ~ !identical(., FALSE))
   args <- purrr::modify_if(args, ~ identical(., TRUE), ~ "")
-  args <- purrr::map(args, shQuote)
+  args <- purrr::modify_if(args, ~ . != "", shQuote)
 
   n <- names(args)
   n <- gsub("_", "-", n)
